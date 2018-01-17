@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<beans xmlns="http://www.springframework.org/schema/beans"  
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"  
+	xmlns:context="http://www.springframework.org/schema/context"  
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+	http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+	http://www.springframework.org/schema/context  
+	http://www.springframework.org/schema/context/spring-context-3.0.xsd">  
+	<!--
+		<bean id="jedisPoolConfig" class="redis.clients.jedis.JedisPoolConfig">  
+			<property name="maxTotal" value="#{redisConfiguration['MAX_ACTIVE']}" />  
+			<property name="maxIdle" value="#{redisConfiguration['MAX_IDLE']}" />  
+			<property name="testOnBorrow" value="#{redisConfiguration['TEST_ON_BORROW']}" />  
+			<property name="testOnReturn" value="#{redisConfiguration['TEST_ON_RETURN']}" />  
+			<property name="testWhileIdle" value="#{redisConfiguration['TEST_WHILE_IDLE']}" />  
+		</bean>  
+
+		<bean id="jedis.shardInfoCache1" class="redis.clients.jedis.JedisShardInfo">  
+			<constructor-arg index="0" value="#{redisConfiguration['REDIS_IP']}" />  
+			<constructor-arg index="1"  type="int" value="#{redisConfiguration['REDIS_PORT_1']}" />  
+		</bean>   
+		<bean id="jedis.shardInfoCache2" class="redis.clients.jedis.JedisShardInfo">  
+			<constructor-arg index="0" value="#{redisConfiguration['REDIS_IP']}" />  
+			<constructor-arg index="1"  type="int" value="#{redisConfiguration['REDIS_PORT_2']}" />  
+		</bean>
+		<bean id="jedis.shardInfoCache3" class="redis.clients.jedis.JedisShardInfo">  
+			<constructor-arg index="0" value="#{redisConfiguration['REDIS_IP']}" />  
+			<constructor-arg index="1"  type="int" value="#{redisConfiguration['REDIS_PORT_3']}" />  
+		</bean> 
+		<bean id="jedis.shardInfoCache4" class="redis.clients.jedis.JedisShardInfo">  
+			<constructor-arg index="0" value="#{redisConfiguration['REDIS_IP']}" />  
+			<constructor-arg index="1"  type="int" value="#{redisConfiguration['REDIS_PORT_4']}" />  
+		</bean> 
+		<bean id="jedis.shardInfoCache5" class="redis.clients.jedis.JedisShardInfo">  
+			<constructor-arg index="0" value="#{redisConfiguration['REDIS_IP']}" />  
+			<constructor-arg index="1"  type="int" value="#{redisConfiguration['REDIS_PORT_5']}" />  
+		</bean> 
+		<bean id="jedis.shardInfoCache6" class="redis.clients.jedis.JedisShardInfo">  
+			<constructor-arg index="0" value="#{redisConfiguration['REDIS_IP']}" />  
+			<constructor-arg index="1"  type="int" value="#{redisConfiguration['REDIS_PORT_6']}" />  
+		</bean>   
+
+		<bean id="shardedJedisPoolCache" class="redis.clients.jedis.ShardedJedisPool">  
+			<constructor-arg index="0" ref="jedisPoolConfig" />  
+			<constructor-arg index="1">  
+				<list>  
+					<ref bean="jedis.shardInfoCache1" />  
+					<ref bean="jedis.shardInfoCache2" />
+					<ref bean="jedis.shardInfoCache3" /> 
+					<ref bean="jedis.shardInfoCache4" /> 
+					<ref bean="jedis.shardInfoCache5" /> 
+					<ref bean="jedis.shardInfoCache6" />  
+				</list>  
+			</constructor-arg>  
+		</bean>  
+
+		<bean id="redisCache" class="com.soshare.common.RedisUtil">  
+			<property name="shardedJedisPool" ref="shardedJedisPoolCache" />  
+		</bean>  -->
+	<bean name="genericObjectPoolConfig" class="org.apache.commons.pool2.impl.GenericObjectPoolConfig" >  
+		<property name="maxWaitMillis" value="-1" />  
+		<property name="maxTotal" value="1000" />  
+		<property name="minIdle" value="8" />  
+		<property name="maxIdle" value="100" />  
+	</bean>  
+  
+	<bean id="jedisCluster" class="com.dongnao.jack.redis.JedisClusterFactory">  
+		<property name="addressConfig">  
+			<value>classpath:config/redis/connect-redis.properties</value>  
+		</property>  
+		<property name="addressKeyPrefix" value="address" />   <!--  属性文件里  key的前缀 -->  
+      
+		<property name="timeout" value="300000" />  
+		<property name="maxRedirections" value="6" />  
+		<property name="genericObjectPoolConfig" ref="genericObjectPoolConfig" />  
+	</bean> 
+</beans>  
